@@ -8,6 +8,7 @@ namespace tmc\builder\src;
  */
 
 use shellpress\v1_2_5\ShellPress;
+use tmc\builder\src\Components\PageTemplates;
 
 class App extends ShellPress {
 
@@ -23,6 +24,12 @@ class App extends ShellPress {
 		//  ----------------------------------------
 
 		$this::s()->autoloading->addNamespace( 'tmc\builder', dirname( $this::s()->getMainPluginFile() ) );
+
+		//  ----------------------------------------
+		//  Components
+		//  ----------------------------------------
+
+		new PageTemplates( $this );
 
 	}
 }
