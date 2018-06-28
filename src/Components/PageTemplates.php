@@ -17,6 +17,9 @@ class PageTemplates extends IComponent {
 	/** @var string[] - Key: file name; Value: description; */
 	protected $supportedTemplates;
 
+	/** @var string|null */
+	protected $currentPageTemplateSlug;
+
 	/**
 	 * Called on creation of component.
 	 *
@@ -66,6 +69,36 @@ class PageTemplates extends IComponent {
 
 	}
 
+	/**
+	 * Checks if current page uses supported page template.
+	 *
+	 * @return bool
+	 */
+	public function isOnSupportedPage() {
+
+		return array_key_exists( $this->getCurrentPageTemplateSlug(), $this->getSupportedTemplates() );
+
+	}
+
+	/**
+	 * Returns current page template slug.
+	 *
+	 * @return string|null
+	 */
+	public function getCurrentPageTemplateSlug() {
+
+		if( ! $this->currentPageTemplateSlug ){ //  Is slug inside object properties? ( simple cache ).
+
+			$templateSlug = get_page_template_slug();
+
+			$this->currentPageTemplateSlug = ( $templateSlug ) ? $templateSlug : null;
+
+		}
+
+		return $this->currentPageTemplateSlug;
+
+	}
+
 	//  ================================================================================
 	//  FILTERS
 	//  ================================================================================
@@ -94,15 +127,13 @@ class PageTemplates extends IComponent {
 	 */
 	public function _f_replaceTemplatePath( $templatePath ) {
 
-		$chosenPageTemplate = get_page_template_slug(); //  Page template chosen by user in editor.
-
 		//  TODO - Add possibility to overwrite template inside theme.
 
-		if( array_key_exists( $chosenPageTemplate, $this->getSupportedTemplates() ) ){
+		if( $this->isOnSupportedPage() ){
 
 			//  Our custom templates are inside plugin directory.
 			//  It might not be one we are talking about so check if this file exists.
-			$newTemplatePath = trailingslashit( $this->getTemplatesDir() ) . $chosenPageTemplate;
+			$newTemplatePath = trailingslashit( $this->getTemplatesDir() ) . $this->getCurrentPageTemplateSlug();
 
 			if( file_exists( $newTemplatePath ) ) return $newTemplatePath;
 
