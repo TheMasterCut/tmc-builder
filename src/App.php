@@ -8,9 +8,20 @@ namespace tmc\builder\src;
  */
 
 use shellpress\v1_2_5\ShellPress;
+use tmc\builder\src\Components\Customizer;
 use tmc\builder\src\Components\PageTemplates;
+use tmc\builder\src\Components\WidgetsAreas;
 
 class App extends ShellPress {
+
+	/** @var PageTemplates */
+	public $pageTemplates;
+
+	/** @var Customizer */
+	public $customizer;
+
+	/** @var WidgetsAreas */
+	public $widgetsAreas;
 
 	/**
 	 * Called automatically after core is ready.
@@ -29,7 +40,9 @@ class App extends ShellPress {
 		//  Components
 		//  ----------------------------------------
 
-		new PageTemplates( $this );
+		$this->pageTemplates    = new PageTemplates( $this );
+		$this->customizer       = new Customizer( $this );
+		$this->widgetsAreas     = new WidgetsAreas( $this );
 
 	}
 }

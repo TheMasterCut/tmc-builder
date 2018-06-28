@@ -8,6 +8,9 @@ namespace tmc\builder\src\Components;
  */
 
 use shellpress\v1_2_5\src\Shared\Components\IComponent;
+use tmc\builder\src\App;
+use WP_Post;
+use WP_Query;
 
 class PageTemplates extends IComponent {
 
@@ -16,9 +19,6 @@ class PageTemplates extends IComponent {
 
 	/** @var string[] - Key: file name; Value: description; */
 	protected $supportedTemplates;
-
-	/** @var string|null */
-	protected $currentPageTemplateSlug;
 
 	/**
 	 * Called on creation of component.
@@ -45,6 +45,12 @@ class PageTemplates extends IComponent {
 
 		add_filter( 'template_include',                 array( $this, '_f_replaceTemplatePath') );
 
+		//  ----------------------------------------
+		//  Actions
+		//  ----------------------------------------
+
+		add_action( 'save_post_page',                   array( $this, '_a_refreshSupportedPagesCache' ) );
+
 	}
 
 	/**
@@ -63,7 +69,7 @@ class PageTemplates extends IComponent {
 	 *
 	 * @return string[]
 	 */
-	public function getSupportedTemplates() {
+	public function getSupportedPageTemplates() {
 
 		return $this->supportedTemplates;
 
@@ -71,31 +77,64 @@ class PageTemplates extends IComponent {
 
 	/**
 	 * Checks if current page uses supported page template.
+	 * It should be called after wp post has been set up.
 	 *
 	 * @return bool
 	 */
 	public function isOnSupportedPage() {
 
-		return array_key_exists( $this->getCurrentPageTemplateSlug(), $this->getSupportedTemplates() );
+		return is_page() && array_key_exists( $this->getCurrentPageTemplateSlug(), $this->getSupportedPageTemplates() );
 
 	}
 
 	/**
 	 * Returns current page template slug.
 	 *
-	 * @return string|null
+	 * @return string|false
 	 */
 	public function getCurrentPageTemplateSlug() {
 
-		if( ! $this->currentPageTemplateSlug ){ //  Is slug inside object properties? ( simple cache ).
+		return get_page_template_slug();
 
-			$templateSlug = get_page_template_slug();
+	}
 
-			$this->currentPageTemplateSlug = ( $templateSlug ) ? $templateSlug : null;
+	/**
+	 * Returns saved ids.
+	 *
+	 * return int[]
+	 */
+	public function getAllSupportedPagesIds() {
+
+		return (array) $this::s()->options->get( 'internal/allSupportedPagesIds', array() );
+
+	}
+
+	/**
+	 * Performs database query. Looks for all pages with supported page templates.
+	 *
+	 * @return void
+	 */
+	public function refreshAllSupportedPagesIds() {
+
+		$pages = get_pages( array(
+			'post_status'   =>  array( 'publish', 'pending', 'private', 'draft' )
+		) );
+
+		$pageIds = array();
+
+		// Check each page template and add its ID to array.
+		foreach( $pages as $page ){ /** @var WP_Post $page */
+
+			$pageTemplate = get_page_template_slug( $page );
+
+			if( $pageTemplate && array_key_exists( $pageTemplate, $this->getSupportedPageTemplates() ) ){
+				$pageIds[] = $page->ID;
+			}
 
 		}
 
-		return $this->currentPageTemplateSlug;
+		$this::s()->options->set( 'internal/allSupportedPagesIds', $pageIds );
+		$this::s()->options->flush();
 
 	}
 
@@ -113,7 +152,7 @@ class PageTemplates extends IComponent {
 	 */
 	public function _f_addCustomPageTemplates( $templates ) {
 
-		return array_replace( $templates, $this->getSupportedTemplates() );
+		return array_replace( $templates, $this->getSupportedPageTemplates() );
 
 	}
 
@@ -140,6 +179,20 @@ class PageTemplates extends IComponent {
 		}
 
 		return $templatePath;
+
+	}
+
+	/**
+	 * Refreshes all supported pages. It may has performance issues.
+	 * Called on save_post_page.
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 */
+	public function _a_refreshSupportedPagesCache() {
+
+		$this->refreshAllSupportedPagesIds();
 
 	}
 
