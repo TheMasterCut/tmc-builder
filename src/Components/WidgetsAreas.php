@@ -72,7 +72,7 @@ class WidgetsAreas extends IComponent {
 	 */
 	public function _a_themeSupportDeclaration() {
 
-		add_theme_support( 'widgets' );
+		add_theme_support( 'widgets customize-selective-refresh-widgets' );
 
 	}
 
