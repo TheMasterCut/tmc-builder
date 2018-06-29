@@ -1,5 +1,22 @@
 .tmc-builder {
 
+    &-widgets-area {
+
+        display: block;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li.widget {
+
+            display: block;
+            margin: 0;
+            padding: 0;
+
+        }
+
+    }
+
     &-sidebar-not-enabled {
 
         padding: 100px 20px;
@@ -34,6 +51,12 @@
 
             box-shadow: 0 1px 0 darken( #3498DB, 15% );
             transform: translateY( 3px );
+
+        }
+
+        &:focus {
+
+            outline: 0;
 
         }
 
