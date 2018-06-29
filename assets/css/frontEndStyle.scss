@@ -3,15 +3,27 @@
     &-widgets-area {
 
         display: block;
-        margin: 0;
+        margin: auto;
         padding: 0;
         list-style: none;
+        max-width: 900px;   //  TODO - remove max-width.
 
         li.widget {
 
             display: block;
             margin: 0;
             padding: 0;
+
+        }
+
+        .customize-partial-edit-shortcut {
+
+            button {
+
+                left: 2px;
+                top: 2px;
+
+            }
 
         }
 
