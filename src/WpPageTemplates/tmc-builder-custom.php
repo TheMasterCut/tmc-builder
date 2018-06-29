@@ -4,15 +4,24 @@
  * Description:     The Page Template for TMC Builder widgets
  */
 
+use tmc\builder\src\App;
+
 if( locate_template( 'tmc-builder-custom.php' ) ){
 
-	get_template_part( 'tmc-builder', 'custom-template' );  //  Allow user-created custom template.
+	get_template_part( 'tmc-builder', 'custom' );  //  Allow user-created custom template.
 
 } else {
 
 	get_header();
 
-	printf( '<div %1$s>', implode( ' ', get_post_class() ) );   //  BEGIN : Post div
+	//  Prepare classes for outer div.
+
+	$widgetsAreaClasses = array( 'tmc-builder-widgets-area' );
+	$widgetsAreaClasses = array_merge( $widgetsAreaClasses, get_post_class() );
+
+	//  BEGIN : Post div.
+
+	printf( '<div %1$s>', implode( ' ', $widgetsAreaClasses ) );
 
 	if( have_posts() ){
 
@@ -20,18 +29,17 @@ if( locate_template( 'tmc-builder-custom.php' ) ){
 
 			the_post();
 
-			$sidebarName = 'lol';
+			$sidebarId = App::i()->widgetsAreas->getWidgetsAreaIdByPost( get_the_ID() );
 
-			if( is_active_sidebar( $sidebarName ) ){
+			if( is_active_sidebar( $sidebarId ) ){
 
-				dynamic_sidebar( $sidebarName );
+				dynamic_sidebar( $sidebarId );
 
 			} else {
 
-				printf( '<div class="tmc-builder-sidebar-not-enabled"><p>%1$s</p></div>',
-					sprintf( __( 'TMC Builder widgets area. Start adding widgets %1$s.' ),
-						sprintf( '<a href="%1$s">%2$s</a>', '#', __( 'here', 'tmc_builder' ) )
-					)
+				printf( '<div class="tmc-builder-sidebar-not-enabled"><p>%1$s</p><p>%2$s</p></div>',
+					sprintf( __( 'TMC Builder widgets area.' ) ),
+					sprintf( '<a class="tmc-builder-button-add-new" href="%1$s">%2$s</a>', App::i()->customizer->getWidgetsAreaCustomizerUrl( $sidebarId ), __( 'Add new widgets here', 'tmc_builder' ) )
 				);
 
 			}
@@ -40,7 +48,9 @@ if( locate_template( 'tmc-builder-custom.php' ) ){
 
 	}
 
-	echo '</div>';  //  END : Post div
+	echo '</div>';
+
+	//  END : Post div.
 
 	get_footer();
 

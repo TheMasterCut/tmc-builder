@@ -1,6 +1,42 @@
-.tmc-builder-sidebar-not-enabled {
+.tmc-builder {
 
-    padding: 100px 20px;
-    text-align: center;
+    &-sidebar-not-enabled {
+
+        padding: 100px 20px;
+        text-align: center;
+
+        p {
+            padding: 1em 0 0;
+        }
+
+    }
+
+    &-button-add-new {
+
+        display: inline-block;
+        padding: 1em 1.5em;
+        color: #fff;
+        background-color: #3498DB;
+        border-radius: 0.5em;
+        box-shadow: 0 4px 0 darken( #3498DB, 15% );
+        transition: all 100ms;
+        outline: 0;
+
+        &:hover {
+
+            box-shadow: 0 8px 0 darken( #3498DB, 15% );
+            color: #fff;
+            transform: translateY( -4px );
+
+        }
+
+        &:active {
+
+            box-shadow: 0 1px 0 darken( #3498DB, 15% );
+            transform: translateY( 3px );
+
+        }
+
+    }
 
 }

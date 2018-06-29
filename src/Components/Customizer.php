@@ -21,4 +21,24 @@ class Customizer extends IComponent {
 		// TODO: Implement onSetUp() method.
 	}
 
+	/**
+	 * Returns unescaped direct URL for widgets editing.
+	 *
+	 * @param string $sidebarId
+	 *
+	 * @return string
+	 */
+	public function getWidgetsAreaCustomizerUrl( $sidebarId ) {
+
+		$url        = admin_url( 'customize.php' );
+		$queryArgs  = array(
+			'autofocus[panel]'      =>  'widgets',
+			'autofocus[section]'    =>  'sidebar-widgets-' . $sidebarId,
+			'url'                   =>  esc_url( add_query_arg( array() ) )
+		);
+
+		return add_query_arg( $queryArgs, $url );
+
+	}
+
 }
