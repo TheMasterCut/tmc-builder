@@ -14,6 +14,12 @@
             margin: 0;
             padding: 0;
 
+            &.hover {
+
+                box-shadow: 0 0 0 2px #1d6fa5;
+
+            }
+
         }
 
         .customize-partial-edit-shortcut {
