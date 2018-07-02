@@ -9,7 +9,6 @@ namespace tmc\builder\src\Components;
 
 use shellpress\v1_2_5\src\Shared\Components\IComponent;
 use tmc\builder\src\App;
-use WP_Admin_Bar;
 use WP_Post;
 
 class WidgetsAreas extends IComponent {
