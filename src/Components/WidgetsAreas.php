@@ -9,6 +9,7 @@ namespace tmc\builder\src\Components;
 
 use shellpress\v1_2_5\src\Shared\Components\IComponent;
 use tmc\builder\src\App;
+use WP_Admin_Bar;
 use WP_Post;
 
 class WidgetsAreas extends IComponent {
@@ -34,13 +35,21 @@ class WidgetsAreas extends IComponent {
 	/**
 	 * Creates unique dynamic sidebar ID from post or its ID.
 	 *
-	 * @param WP_Post|int $post
+	 * @param WP_Post|int|null $post
 	 *
 	 * @return string
 	 */
-	public function getWidgetsAreaIdByPost( $post ) {
+	public function getWidgetsAreaIdByPost( $post = null ) {
 
-		$postId = ( is_numeric( $post ) ) ? (int) $post : $post->ID;
+		if( $post ){
+
+			$postId = ( is_numeric( $post ) ) ? (int) $post : $post->ID;
+
+		} else {
+
+			$postId = (int) get_the_ID();
+
+		}
 
 		return $this::s()->getPrefix( '_widgets_' . $postId );
 

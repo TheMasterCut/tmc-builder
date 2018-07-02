@@ -42,14 +42,15 @@ class PageTemplates extends IComponent {
 		//  ----------------------------------------
 
 		add_filter( 'theme_page_templates',             array( $this, '_f_addCustomPageTemplates' ) );
-
 		add_filter( 'template_include',                 array( $this, '_f_replaceTemplatePath') );
+		add_filter( 'body_class',                       array( $this, '_f_addBodyClass' ) );
 
 		//  ----------------------------------------
 		//  Actions
 		//  ----------------------------------------
 
 		add_action( 'save_post_page',                   array( $this, '_a_refreshSupportedPagesCache' ) );
+		add_action( 'admin_bar_menu',                   array( $this, '_a_modifyCustomizerUrlOnAdminBarMenu' ), 50 );
 
 	}
 
@@ -183,6 +184,31 @@ class PageTemplates extends IComponent {
 	}
 
 	/**
+	 * Adds class 'tmc-builder' to body tag on pages that use builder.
+	 *
+	 * @param array $classes
+	 *
+	 * @internal
+	 *
+	 * @return array
+	 */
+	public function _f_addBodyClass( $classes ) {
+
+		if( $this->isOnSupportedPage() ){
+
+			$classes = array_merge( $classes, array( 'tmc-builder' ) );
+
+		}
+
+		return $classes;
+
+	}
+
+	//  ================================================================================
+	//  Actions
+	//  ================================================================================
+
+	/**
 	 * Refreshes all supported pages. It may has performance issues.
 	 * Called on save_post_page.
 	 *
@@ -193,6 +219,32 @@ class PageTemplates extends IComponent {
 	public function _a_refreshSupportedPagesCache() {
 
 		$this->refreshAllSupportedPagesIds();
+
+	}
+
+	/**
+	 * Changes url of customizer link by removing and adding nodes again.
+	 *
+	 * @param wp_admin_bar $wpAdminBar
+	 */
+	public function _a_modifyCustomizerUrlOnAdminBarMenu( $wpAdminBar ) {
+
+		foreach( $wpAdminBar->get_nodes() as $id => $node ){
+
+			$wpAdminBar->remove_node( $id );
+
+			if( $id === 'customize' ){
+
+				//  Modify href inside current node.
+
+				$widgetsAreaId  = App::i()->widgetsAreas->getWidgetsAreaIdByPost();
+				$node->href     = App::i()->customizer->getWidgetsAreaCustomizerUrl( $widgetsAreaId );
+
+			}
+
+			$wpAdminBar->add_node( $node );
+
+		}
 
 	}
 
