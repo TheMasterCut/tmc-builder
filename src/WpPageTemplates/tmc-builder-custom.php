@@ -21,7 +21,7 @@ if( locate_template( 'tmc-builder-custom.php' ) ){
 
 	//  BEGIN : Post div.
 
-	printf( '<ul class="%1$s">', implode( ' ', $widgetsAreaClasses ) );
+	printf( '<div class="%1$s">', implode( ' ', $widgetsAreaClasses ) );
 
 	if( have_posts() ){
 

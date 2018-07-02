@@ -93,12 +93,29 @@ class WidgetsAreas extends IComponent {
 	 */
 	public function _a_enqueueFrontEndScripts() {
 
+		//  ----------------------------------------
+		//  On supported page
+		//  ----------------------------------------
+
 		if( ! App::i()->pageTemplates->isOnSupportedPage() ) return;
 
 		wp_enqueue_style(
 			$this::s()->getPrefix( '_front' ),
 			$this::s()->getUrl( 'assets/css/frontEndStyle.css' ),
 			array(),
+			$this::s()->getFullPluginVersion()
+		);
+
+		//  ----------------------------------------
+		//  On supported page and in customizer
+		//  ----------------------------------------
+
+		if( ! is_customize_preview() ) return;
+
+		wp_enqueue_script(
+			$this::s()->getPrefix( '_customizer' ),
+			$this::s()->getUrl( 'assets/js/customizer.js' ),
+			array( 'jquery-ui-sortable' ),
 			$this::s()->getFullPluginVersion()
 		);
 
@@ -128,7 +145,9 @@ class WidgetsAreas extends IComponent {
 												__( 'widgets', 'tmc_builder' )
 											),
 						'id'            =>  $this->getWidgetsAreaIdByPost( $pageId ),
-						'description'   =>  sprintf( __( 'Widgets area for page: %1$s', 'tmc_builder' ), $page->post_title )
+						'description'   =>  sprintf( __( 'Widgets area for page: %1$s', 'tmc_builder' ), $page->post_title ),
+						'before_widget' =>  '<div id="%1$s" class="widget %2$s">',
+						'after_widget'  =>  '</div>'
 					)
 				);
 
