@@ -11,15 +11,8 @@ use shellpress\v1_2_8\src\Shared\Components\IComponent;
 use tmc\builder\src\App;
 use WP_Admin_Bar;
 use WP_Post;
-use WP_Query;
 
 class PageTemplates extends IComponent {
-
-	/** @var string */
-	protected $templatesDir;
-
-	/** @var string[] - Key: file name; Value: description; */
-	protected $supportedTemplates;
 
 	/**
 	 * Called on creation of component.
@@ -27,16 +20,6 @@ class PageTemplates extends IComponent {
 	 * @return void
 	 */
 	protected function onSetUp() {
-
-		//  ----------------------------------------
-		//  Properties
-		//  ----------------------------------------
-
-		$this->templatesDir = $this::s()->getPath( 'src/WpPageTemplates' );
-
-		$this->supportedTemplates = array(
-			'tmc-builder-custom.php'    =>  __( 'TMC Builder Custom', 'tmc_builder' )
-		);
 
 		//  ----------------------------------------
 		//  Filters
@@ -62,7 +45,7 @@ class PageTemplates extends IComponent {
 	 */
 	public function getTemplatesDir() {
 
-		return $this->templatesDir;
+		return $this::s()->getPath( 'src/WpPageTemplates' );
 
 	}
 
@@ -73,7 +56,9 @@ class PageTemplates extends IComponent {
 	 */
 	public function getSupportedPageTemplates() {
 
-		return $this->supportedTemplates;
+		return array(
+			'tmc-builder-custom.php'    =>  __( 'TMC Builder Custom', 'tmc_builder' )
+		);
 
 	}
 
