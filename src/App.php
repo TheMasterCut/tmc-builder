@@ -7,7 +7,7 @@ namespace tmc\builder\src;
  * Time: 11:38
  */
 
-use shellpress\v1_2_5\ShellPress;
+use shellpress\v1_2_8\ShellPress;
 use tmc\builder\src\Components\Customizer;
 use tmc\builder\src\Components\PageTemplates;
 use tmc\builder\src\Components\WidgetsAreas;

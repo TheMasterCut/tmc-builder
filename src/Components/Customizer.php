@@ -8,7 +8,7 @@ namespace tmc\builder\src\Components;
  * Time: 14:09
  */
 
-use shellpress\v1_2_5\src\Shared\Components\IComponent;
+use shellpress\v1_2_8\src\Shared\Components\IComponent;
 
 class Customizer extends IComponent {
 
